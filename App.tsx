@@ -1,11 +1,24 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
-import { Welcome } from "./src/pages/Welcome";
+import { StyleSheet } from "react-native";
+
+import { useFonts, Jost_400Regular, Jost_600SemiBold } from '@expo-google-fonts/jost'
+import AppLoading from 'expo-app-loading'
+
+import { UserIdentification } from "./src/pages/UserIdentification";
 
 const App = () => {
+  const [ loadedFonts ] = useFonts({
+    Jost_400Regular,
+    Jost_600SemiBold
+  });
+
+  if(!loadedFonts){
+    return <AppLoading/>
+  }
+
   return (
     <>
-      <Welcome/>
+      <UserIdentification/>
     </>
   );
 };
