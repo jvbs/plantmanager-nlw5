@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 import { useFonts, Jost_400Regular, Jost_600SemiBold } from '@expo-google-fonts/jost'
 import AppLoading from 'expo-app-loading'
 
-import { Confirmation } from "./src/pages/Confirmation";
+import Routes from "./src/routes";
 
 const App = () => {
   const [ loadedFonts ] = useFonts({
@@ -18,7 +18,7 @@ const App = () => {
 
   return (
     <>
-      <Confirmation/>
+      <Routes/>
     </>
   );
 };
