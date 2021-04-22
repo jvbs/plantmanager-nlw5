@@ -1,13 +1,63 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 
 import { EnvironmentButton } from '../components/EnvironmentButton'
 import { Header } from '../components/Header'
+import { PlantCardPrimary } from '../components/PlantCardPrimary'
+import api from '../services/api'
 
 import colors from '../styles/colors'
 import fonts from '../styles/fonts'
 
+interface EnvironmentProps {
+  key: string;
+  title: string;
+}
+
+interface PlantProps {
+  id: string;
+  name: string;
+  about: string;
+  water_tips:string;
+  photo: string;
+  environments: [string];
+  frequency: {
+    times: number;
+    repeat_every: string;
+  }
+}
+
+
 export function PlantSelect() {
+  //? EnvironmentProps[] - pois recebe um vetor.
+  const [environments, setEnvironments] = useState<EnvironmentProps[]>([])
+  const [plants, setPlants] = useState<PlantProps[]>([])
+
+  useEffect(() => {
+    async function fetchEnvironments(){
+      const { data } = await api.get('plants_environments')
+
+      setEnvironments([
+        {
+          key: 'all',
+          title: 'Todos'
+        },
+        ...data])
+    }
+
+    fetchEnvironments()
+  }, [])
+
+  useEffect(() => {
+    async function fetchPlants(){
+      const { data } = await api.get('plants')
+
+      setPlants(data)
+    }
+
+    fetchPlants()
+  }, [])
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -15,20 +65,32 @@ export function PlantSelect() {
 
         <Text style={styles.title}>Em qual ambiente</Text>
         <Text style={styles.subtitle}>você quer colocar sua planta?</Text>
+
+        {/* <Text>Envs: {environments}</Text> */}
       </View>
 
       <View>
         <FlatList
-        data={[1, 2, 3, 4, 5, 6, 7, 8]}
+        data={environments}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.environmentList}
         renderItem={({ item }) => (
           <EnvironmentButton
-            title='teste'
-            active />
+            title={item.title}
+            />
         )}>
+        </FlatList>
+      </View>
 
+      <View style={styles.plants}>
+        <FlatList
+        data={plants}
+        showsVerticalScrollIndicator={false}
+        numColumns={2}
+        renderItem={({ item }) => (
+          <PlantCardPrimary data={item}/>
+        )}>
         </FlatList>
       </View>
     </View>
@@ -62,6 +124,11 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     marginLeft: 32,
     marginVertical: 32
+  },
+  plants: {
+    flex: 1,
+    paddingHorizontal: 32,
+    justifyContent: 'center'
   }
 
 })
